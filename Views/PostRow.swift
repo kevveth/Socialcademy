@@ -11,13 +11,13 @@ struct PostRow: View {
     let post: Post
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10){
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(post.authorName)
                     .font(.subheadline)
                     .fontWeight(.medium)
                 Spacer()
-                Text(post.timeStamp.formatted(date: .abbreviated, time: .omitted))
+                Text(post.timestamp.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
             }
             .foregroundColor(.gray)

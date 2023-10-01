@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct Post: Identifiable, Codable {
+struct Post: Identifiable, Equatable, Codable {
     var title: String
     var content: String
     var authorName: String
-    var timeStamp = Date()
+    var timestamp = Date()
     var id = UUID()
     
     func contains(_ string: String) -> Bool {
@@ -19,7 +19,6 @@ struct Post: Identifiable, Codable {
         let query = string.lowercased()
         
         let matches = properties.filter { $0.contains(query) }
-        
         return !matches.isEmpty
     }
 }
