@@ -37,11 +37,18 @@ struct PostsRepository: PostsRepositoryProtocol {
     
     func fetchPosts() async throws -> [Post] {
         let snapshot = try await postsReference
-            .order(by: "timestamp", descending: true)
+            .order(by: "timeStamp", descending: true)
             .getDocuments()
+        print(snapshot.documents.count)
         return snapshot.documents.compactMap { document in
-            try! document.data(as: Post.self)
-        }
+              do {
+                let post = try document.data(as: Post.self)
+                return post
+              } catch {
+                print("[PostsRepository] Cannot decode post: \(error)")
+                return nil
+              }
+            }
     }
     
     func create(_ post: Post) async throws {

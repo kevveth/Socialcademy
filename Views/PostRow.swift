@@ -17,7 +17,7 @@ struct PostRow: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                 Spacer()
-                Text(post.timestamp.formatted(date: .abbreviated, time: .omitted))
+                Text(post.timeStamp.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
             }
             .foregroundColor(.gray)

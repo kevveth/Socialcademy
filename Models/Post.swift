@@ -11,7 +11,7 @@ struct Post: Identifiable, Equatable, Codable {
     var title: String
     var content: String
     var authorName: String
-    var timestamp = Date()
+    var timeStamp = Date()
     var id = UUID()
     
     func contains(_ string: String) -> Bool {
