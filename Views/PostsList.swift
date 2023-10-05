@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct PostsList: View {
     @StateObject var viewModel = PostsViewModel()
     
@@ -19,9 +21,10 @@ struct PostsList: View {
                 switch viewModel.posts {
                 case .loading:
                     ProgressView()
+                    
                 case let .error(error):
                     EmptyListView(
-                        title: "Cannot Load Posts",
+                        title: "Cannot load posts",
                         message: error.localizedDescription,
                         retryAction: {
                             viewModel.fetchPosts()
@@ -29,16 +32,19 @@ struct PostsList: View {
                     )
                 case .empty:
                     EmptyListView(
-                        title: "No Posts",
-                        message: "There aren’t any posts yet."
+                        title: "No posts",
+                        message: "There aren't any posts yet."
                     )
+                    
                 case let .loaded(posts):
-                    List(posts) { post in
+                    List(posts) {
+                        post in
                         if searchText.isEmpty || post.contains(searchText) {
                             PostRow(post: post)
                         }
                     }
                     .searchable(text: $searchText)
+                    
                 }
             }
             .navigationTitle("Posts")

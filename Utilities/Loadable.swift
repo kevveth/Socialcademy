@@ -2,12 +2,12 @@
 //  Loadable.swift
 //  Socialcademy
 //
-//  Created by Kenneth Oliver Rathbun on 9/29/23.
+//  Created by Kenneth Oliver Rathbun on 10/2/23.
 //
 
 import Foundation
 
-enum Loadable<Value> {
+enum Loadable<Value>{
     case loading
     case error(Error)
     case loaded(Value)
@@ -19,6 +19,7 @@ enum Loadable<Value> {
             }
             return nil
         }
+        
         set {
             guard let newValue = newValue else { return }
             self = .loaded(newValue)
@@ -32,7 +33,7 @@ extension Loadable where Value: RangeReplaceableCollection {
 
 extension Loadable: Equatable where Value: Equatable {
     static func == (lhs: Loadable<Value>, rhs: Loadable<Value>) -> Bool {
-        switch (lhs, rhs) {
+        switch(lhs, rhs) {
         case (.loading, .loading):
             return true
         case let (.error(error1), .error(error2)):
@@ -47,9 +48,9 @@ extension Loadable: Equatable where Value: Equatable {
 
 #if DEBUG
 extension Loadable {
-    static var error: Loadable<Value> { .error(PreviewError()) }
+    static var error: Loadable<Value> { .error(PreivewError()) }
     
-    private struct PreviewError: LocalizedError {
+    private struct PreivewError: LocalizedError {
         let errorDescription: String? = "Lorem ipsum dolor set amet."
     }
     

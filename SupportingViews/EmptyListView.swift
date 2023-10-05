@@ -2,14 +2,14 @@
 //  EmptyListView.swift
 //  Socialcademy
 //
-//  Created by Kenneth Oliver Rathbun on 9/30/23.
+//  Created by Kenneth Oliver Rathbun on 10/2/23.
 //
 
 import SwiftUI
 
 struct EmptyListView: View {
-    let title: String
-    let message: String
+    var title: String
+    var message: String
     var retryAction: (() -> Void)?
     
     var body: some View {
