@@ -8,6 +8,7 @@
 import Foundation
 
 @MainActor
+@dynamicMemberLookup
 class PostRowViewModel: ObservableObject {
     typealias Action = () async throws -> Void
     
@@ -21,6 +22,10 @@ class PostRowViewModel: ObservableObject {
         self.post = post
         self.deleteAction = deleteAction
         self.favoriteAction = favoriteAction
+    }
+    
+    subscript<T>(dynamicMember keyPath: KeyPath<Post, T>) -> T {
+        post[keyPath: keyPath]
     }
     
     func deletePost() {
