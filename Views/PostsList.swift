@@ -39,10 +39,7 @@ struct PostsList: View {
                 case let .loaded(posts):
                     List(posts) { post in
                         if searchText.isEmpty || post.contains(searchText) {
-                            PostRow(
-                                post: post,
-                                deleteAction: viewModel.makeDeleteAction(for: post),
-                                favoriteAction: viewModel.makeFavoriteAction(for: post)
+                            PostRow(viewModel: viewModel.makePostRowViewModel(for: post)
                             )
                         }
                     }
