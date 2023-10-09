@@ -87,6 +87,10 @@ struct PostsRepositoryStub: PostsRepositoryProtocol {
         return try await state.simulate()
     }
     
+    func fetchFavoritePosts() async throws -> [Post] {
+        return try await state.simulate()
+    }
+    
     func create(_ post: Post) async throws {}
     
     func delete(_ post: Post) async throws {}
