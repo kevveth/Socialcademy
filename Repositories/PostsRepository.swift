@@ -9,38 +9,62 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+// MARK: - PostsRepositoryProtocol
+
 protocol PostsRepositoryProtocol {
     func fetchAllPosts() async throws -> [Post]
     func fetchFavoritePosts() async throws -> [Post]
-    func create(_: Post) async throws
+    func create(_ post: Post) async throws
     func delete(_ post: Post) async throws
     func favorite(_ post: Post) async throws
     func unfavorite(_ post: Post) async throws
 }
 
+// MARK: - PostsRepositoryStub
+
+#if DEBUG
+struct PostsRepositoryStub: PostsRepositoryProtocol {
+    let state: Loadable<[Post]>
+    
+    func fetchAllPosts() async throws -> [Post] {
+        return try await state.simulate()
+    }
+    
+    func fetchFavoritePosts() async throws -> [Post] {
+        return try await state.simulate()
+    }
+    
+    func create(_ post: Post) async throws {}
+    
+    func delete(_ post: Post) async throws {}
+    
+    func favorite(_ post: Post) async throws {}
+    
+    func unfavorite(_ post: Post) async throws {}
+}
+#endif
+
+// MARK: - PostsRepository
+
 struct PostsRepository: PostsRepositoryProtocol {
-    let postsReference = Firestore.firestore().collection("posts_v1")
+    let postsReference = Firestore.firestore().collection("posts_v2")
     
     func fetchAllPosts() async throws -> [Post] {
         return try await fetchPosts(from: postsReference)
     }
     
-    
     func fetchFavoritePosts() async throws -> [Post] {
         return try await fetchPosts(from: postsReference.whereField("isFavorite", isEqualTo: true))
     }
     
-    func fetchPosts(from query: Query) async throws -> [Post] {
+    private func fetchPosts(from query: Query) async throws -> [Post] {
         let snapshot = try await query
             .order(by: "timeStamp", descending: true)
-            .whereField("isFavorite", isEqualTo: true)
             .getDocuments()
-        
         return snapshot.documents.compactMap { document in
             try! document.data(as: Post.self)
         }
     }
-    
     
     func create(_ post: Post) async throws {
         let document = postsReference.document(post.id.uuidString)
@@ -78,25 +102,3 @@ private extension DocumentReference {
         }
     }
 }
-
-#if DEBUG
-struct PostsRepositoryStub: PostsRepositoryProtocol {
-    let state: Loadable<[Post]>
-    
-    func fetchAllPosts() async throws -> [Post] {
-        return try await state.simulate()
-    }
-    
-    func fetchFavoritePosts() async throws -> [Post] {
-        return try await state.simulate()
-    }
-    
-    func create(_ post: Post) async throws {}
-    
-    func delete(_ post: Post) async throws {}
-    
-    func favorite(_ post: Post) async throws {}
-    
-    func unfavorite(_ post: Post) async throws {}
-}
-#endif
