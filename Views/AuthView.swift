@@ -43,6 +43,7 @@ private extension AuthView {
             }
             .onSubmit(viewModel.submit)
             .alert("Cannot sign in", error: $viewModel.error)
+            .disabled(viewModel.isWorking)
         }
     }
 }
@@ -71,6 +72,7 @@ private extension AuthView {
             }
             .onSubmit(viewModel.submit)
             .alert("Cannot create account", error: $viewModel.error)
+            .disabled(viewModel.isWorking)
         }
     }
 }

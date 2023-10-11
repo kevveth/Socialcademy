@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct PrimaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding()
@@ -16,6 +18,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .background(Color.accentColor)
             .cornerRadius(10)
+            .animation(.default, value: isEnabled)
     }
 }
 

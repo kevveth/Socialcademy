@@ -13,6 +13,7 @@ class FormViewModel<Value>: ObservableObject {
     typealias Action = (Value) async throws -> Void
     
     @Published var value: Value
+    @Published var isWorking = false
     @Published var error: Error?
     
     subscript<T>(dynamicMember keyPath: WritableKeyPath<Value, T>) -> T {
@@ -29,6 +30,8 @@ class FormViewModel<Value>: ObservableObject {
     
     private func handleSubmit() async
     {
+        isWorking = true
+        
         do {
             try await action(value)
         }
@@ -36,6 +39,8 @@ class FormViewModel<Value>: ObservableObject {
             print("[FormViewModel] Cannot submit: \(error)")
             self.error = error
         }
+        
+        isWorking = false
     }
     
     nonisolated func submit() {
