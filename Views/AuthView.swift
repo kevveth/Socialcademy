@@ -38,6 +38,7 @@ private extension AuthView {
                     .textInputAutocapitalization(.never)
                 SecureField("Password", text: $viewModel.password)
                     .textContentType(.newPassword)
+            } footer: {
                 Button("Create Account", action: viewModel.submit)
             }
             .navigationTitle("Create Account")
@@ -51,38 +52,38 @@ private extension AuthView {
         
         var body: some View {
             VStack {
-                // Title
-                Text("Socialcademy")
-                    .font(.title.bold())
-                
-                //Input Fields
-                Group {
+                Form {
                     TextField("Email", text: $viewModel.email)
                         .textContentType(.emailAddress)
-                        .textInputAutocapitalization(.never)
                     SecureField("Password", text: $viewModel.password)
                         .textContentType(.password)
+                } footer: {
+                    Button("Sign In", action: viewModel.submit)
+                        .buttonStyle(.primary)
+                    footer()
                 }
+                .onSubmit(viewModel.submit)
+            }
+        }
+    }
+}
+
+struct Form<Content: View, Footer: View>: View {
+    @ViewBuilder let content: () -> Content
+    @ViewBuilder let footer: () -> Footer
+    
+    var body: some View {
+        VStack {
+            Text("Socialcademy")
+                .font(.title.bold())
+            
+            content()
                 .padding()
                 .background(Color.secondary.opacity(0.15))
                 .cornerRadius(10)
-                
-                // Submit
-                Button("Sign In", action: viewModel.submit)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
-                
-                // Footer
-                footer()
-                    .padding()
-            }
-            .navigationBarHidden(true)
-            .onSubmit(viewModel.submit)
-            .padding()
         }
+        .navigationBarHidden(true)
+        .padding()
     }
 }
 
