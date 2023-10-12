@@ -55,23 +55,26 @@ class PostsViewModel: ObservableObject {
     }
     
     func makePostRowViewModel(for post: Post) -> PostRowViewModel {
+        let deleteAction = { [weak self] in
+            try await self?.postsRepository.delete(post)
+            self?.posts.value?.removeAll { $0.id == post.id }
+        }
+        
+        let favoriteAction = { [weak self] in
+            let newValue = !post.isFavorite
+            
+            //Update the document in Firestore
+            try await newValue ? self?.postsRepository.favorite(post) : self?.postsRepository.unfavorite(post)
+            
+            //Update the PostsList
+            guard let index = self?.posts.value?.firstIndex(of: post) else { return }
+            self?.posts.value?[index].isFavorite = newValue
+        }
+        
         return PostRowViewModel(
             post: post,
-            deleteAction: {
-                [weak self] in
-                    try await self?.postsRepository.delete(post)
-                self?.posts.value?.removeAll { $0.id == post.id }
-            },
-            favoriteAction: { [weak self] in
-                let newValue = !post.isFavorite
-                
-                //Update the document in Firestore
-                try await newValue ? self?.postsRepository.favorite(post) : self?.postsRepository.unfavorite(post)
-                
-                //Update the PostsList
-                guard let index = self?.posts.value?.firstIndex(of: post) else { return }
-                self?.posts.value?[index].isFavorite = newValue
-            }
+            deleteAction: postsRepository.canDelete(post) ? deleteAction : nil,
+            favoriteAction: favoriteAction
         )
     }
 }

@@ -12,14 +12,20 @@ import FirebaseFirestoreSwift
 // MARK: - PostsRepositoryProtocol
 
 protocol PostsRepositoryProtocol {
+    var user: User { get }
+    
     func fetchAllPosts() async throws -> [Post]
     func fetchFavoritePosts() async throws -> [Post]
     func create(_ post: Post) async throws
     func delete(_ post: Post) async throws
     func favorite(_ post: Post) async throws
     func unfavorite(_ post: Post) async throws
-    
-    var user: User { get }
+}
+
+extension PostsRepositoryProtocol {
+    func canDelete(_ post: Post) -> Bool {
+        post.author.id == user.id
+    }
 }
 
 // MARK: - PostsRepositoryStub
@@ -76,6 +82,7 @@ struct PostsRepository: PostsRepositoryProtocol {
     }
     
     func delete(_ post: Post) async throws {
+        precondition(canDelete(post))
         let document = postsReference.document(post.id.uuidString)
         try await document.delete()
     }
