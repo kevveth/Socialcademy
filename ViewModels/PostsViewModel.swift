@@ -32,6 +32,28 @@ class PostsViewModel: ObservableObject {
         self.postsRepository = postsRepository
     }
     
+    func fetchPosts() {
+        Task {
+            do {
+                posts = .loaded(try await postsRepository.fetchPosts(matching: filter))
+            }
+            catch {
+                print("[PostsViewModel] Cannot fetch posts: \(error)")
+                posts = .error(error)
+            }
+        }
+    }
+    
+    func makeNewPostViewModel() -> FormViewModel<Post> {
+        return FormViewModel(
+            initialValue: Post(title: "", content: "", author: postsRepository.user),
+            action: { [weak self] post in
+                try await self?.postsRepository.create(post)
+                self?.posts.value?.insert(post, at: 0)
+            }
+        )
+    }
+    
     func makePostRowViewModel(for post: Post) -> PostRowViewModel {
         return PostRowViewModel(
             post: post,
@@ -51,25 +73,6 @@ class PostsViewModel: ObservableObject {
                 self?.posts.value?[index].isFavorite = newValue
             }
         )
-    }
-    
-    func makeCreateAction() -> NewPostForm.CreateAction {
-        return { [weak self] post in
-            try await self?.postsRepository.create(post)
-            self?.posts.value?.insert(post, at: 0)
-        }
-    }
-    
-    func fetchPosts() {
-        Task {
-            do {
-                posts = .loaded(try await postsRepository.fetchPosts(matching: filter))
-            }
-            catch {
-                print("[PostsViewModel] Cannot fetch posts: \(error)")
-                posts = .error(error)
-            }
-        }
     }
 }
 
