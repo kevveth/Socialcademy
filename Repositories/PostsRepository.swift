@@ -14,8 +14,8 @@ import FirebaseFirestoreSwift
 protocol PostsRepositoryProtocol {
     var user: User { get }
     
-    func fetchPosts(by author: User) async throws-> [Post]
     func fetchAllPosts() async throws -> [Post]
+    func fetchPosts(by author: User) async throws -> [Post]
     func fetchFavoritePosts() async throws -> [Post]
     func create(_ post: Post) async throws
     func delete(_ post: Post) async throws
