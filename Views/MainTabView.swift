@@ -28,4 +28,5 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
+        .environmentObject(ViewModelFactory.preview)
 }
