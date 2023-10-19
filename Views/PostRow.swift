@@ -17,7 +17,7 @@ struct PostRow: View {
             HStack {
                 AuthorView(author: viewModel.author)
                 Spacer()
-                Text(viewModel.timeStamp.formatted(date: .abbreviated, time: .omitted))
+                Text(viewModel.timestamp.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
             }
             .foregroundColor(.gray)
@@ -28,10 +28,12 @@ struct PostRow: View {
             HStack {
                 FavoriteButton(isFavorite: viewModel.isFavorite, action: {viewModel.favoritePost()})
                 Spacer()
-                Button(role: .destructive, action: {
-                    showConfirmationDialog = true
-                }) {
-                    Label("Delete", systemImage: "trash")
+                if viewModel.canDeletePost {
+                    Button(role: .destructive, action: {
+                        showConfirmationDialog = true
+                    }) {
+                        Label("Delete", systemImage: "trash")
+                    }
                 }
             }
             .labelStyle(.iconOnly)
