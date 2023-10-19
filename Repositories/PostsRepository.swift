@@ -79,7 +79,7 @@ struct PostsRepository: PostsRepositoryProtocol {
         // Query for each post represented in `favorites`
         let posts = try await postsReference
             .whereField("id", in: favorites.map(\.uuidString))
-            .order(by: "timeStamp", descending: true)
+            .order(by: "timestamp", descending: true)
             .getDocuments(as: Post.self)
         
         // Since each post in this method is a favorite, set each post's `isFavorite` to true
@@ -136,7 +136,7 @@ private extension DocumentReference {
 private extension PostsRepository {
     func fetchPosts(from query: Query) async throws -> [Post] {
         let (posts, favorites) = try await (
-            query.order(by: "timeStamp", descending: true).getDocuments(as: Post.self),
+            query.order(by: "timestamp", descending: true).getDocuments(as: Post.self),
             fetchFavorites()
         )
         
