@@ -31,7 +31,7 @@ struct CommentsList: View {
                               message: "Be the first to leave a comment.")
             case .loaded(let comments):
                 List(comments) { comment in
-                    
+                    CommentRow(comment: comment)
                 }
                 .animation(.default, value: comments)
             }
