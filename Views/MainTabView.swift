@@ -32,7 +32,9 @@ struct MainTabView: View {
     }
 }
 
-#Preview {
-    MainTabView()
-        .environmentObject(ViewModelFactory.preview)
+struct MainTabView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainTabView()
+            .environmentObject(ViewModelFactory.preview)
+    }
 }

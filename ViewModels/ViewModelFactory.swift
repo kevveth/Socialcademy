@@ -18,6 +18,11 @@ class ViewModelFactory: ObservableObject {
     func makePostsViewModel(filter: PostsViewModel.Filter = .all) -> PostsViewModel {
         return PostsViewModel(filter: filter, postsRepository: PostsRepository(user: user))
     }
+    
+    // Initializes the `CommentsViewModel` and its dependency, `CommentsRepository`, using the given post and factory's `user` property
+    func makeCommentsViewModel(for post: Post) -> CommentsViewModel {
+        return CommentsViewModel(commentsRepository: CommentsRepository(user: user, post: post))
+    }
 }
 
 #if DEBUG

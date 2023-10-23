@@ -9,6 +9,8 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+// MARK: - CommentsRepositoryProtocol
+
 protocol CommentsRepositoryProtocol {
     var user: User { get }
     var post: Post { get }
@@ -23,11 +25,13 @@ extension CommentsRepositoryProtocol {
     }
 }
 
+// MARK: - CommentsRepositoryStub
+
 #if DEBUG
 struct CommentsRepositoryStub: CommentsRepositoryProtocol {
+    let state: Loadable<[Comment]>
     let user = User.testUser
     let post = Post.testPost
-    let state: Loadable<[Comment]>
     
     func fetchComments() async throws -> [Comment] {
         return try await state.simulate()
@@ -39,12 +43,14 @@ struct CommentsRepositoryStub: CommentsRepositoryProtocol {
 }
 #endif
 
+// MARK: - CommentsRepository
+
 struct CommentsRepository: CommentsRepositoryProtocol {
     let user: User
     let post: Post
     
     private var commentsReference: CollectionReference {
-        let postsReference = Firestore.firestore().collection("posts_v3")
+        let postsReference = Firestore.firestore().collection("posts_v2")
         let document = postsReference.document(post.id.uuidString)
         return document.collection("comments")
     }

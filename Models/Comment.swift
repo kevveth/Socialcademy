@@ -1,8 +1,8 @@
 //
-//  Model.swift
+//  Comment.swift
 //  Socialcademy
 //
-//  Created by Kenneth Oliver Rathbun on 10/19/23.
+//  Created by Kenneth Oliver Rathbun on 10/21/23.
 //
 
 import Foundation
@@ -17,3 +17,4 @@ struct Comment: Identifiable, Equatable, Codable {
 extension Comment {
     static let testComment = Comment(content: "Lorem ipsum dolor set amet.", author: User.testUser)
 }
+

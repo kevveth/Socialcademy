@@ -21,11 +21,32 @@ class CommentsViewModel: ObservableObject {
         Task {
             do {
                 comments = .loaded(try await commentsRepository.fetchComments())
-            }
-            catch {
+            } catch {
                 print("[CommentsViewModel] Cannot fetch comments: \(error)")
                 comments = .error(error)
             }
         }
+    }
+    
+    func makeNewCommentViewModel() -> FormViewModel<Comment> {
+        return FormViewModel<Comment>(
+            initialValue: Comment(content: "", author: commentsRepository.user),
+            action: { [weak self] comment in
+                try await self?.commentsRepository.create(comment)
+                self?.comments.value?.insert(comment, at: 0)
+            }
+        )
+    }
+    
+    func makeCommentRowViewModel(for comment: Comment) -> CommentRowViewModel {
+        let deleteAction = { [weak self] in
+            try await self?.commentsRepository.delete(comment)
+            self?.comments.value?.removeAll { $0.id == comment.id }
+        }
+        
+        return CommentRowViewModel(
+            comment: comment,
+            deleteAction: commentsRepository.canDelete(comment) ? deleteAction: nil
+        )
     }
 }

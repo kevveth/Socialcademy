@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostRow: View {
     @ObservedObject var viewModel: PostRowViewModel
+    @EnvironmentObject private var factory: ViewModelFactory
     
     @State private var showConfirmationDialog = false
     
@@ -34,6 +35,12 @@ struct PostRow: View {
                     }) {
                         Label("Delete", systemImage: "trash")
                     }
+                }
+                NavigationLink {
+                    CommentsList(viewModel: factory.makeCommentsViewModel(for: viewModel.post))
+                } label: {
+                    Label("Comments", systemImage: "text.bubble")
+                        .foregroundColor(.secondary)
                 }
             }
             .labelStyle(.iconOnly)
