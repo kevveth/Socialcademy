@@ -43,10 +43,9 @@ class CommentsViewModel: ObservableObject {
             try await self?.commentsRepository.delete(comment)
             self?.comments.value?.removeAll { $0.id == comment.id }
         }
-        
         return CommentRowViewModel(
             comment: comment,
-            deleteAction: commentsRepository.canDelete(comment) ? deleteAction: nil
+            deleteAction: commentsRepository.canDelete(comment) ? deleteAction : nil
         )
     }
 }
