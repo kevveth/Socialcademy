@@ -7,46 +7,48 @@
 
 import SwiftUI
 
-// MARK: - CommentsList
+ 
 
 struct CommentsList: View {
     @StateObject var viewModel: CommentsViewModel
     
     var body: some View {
-        Group {
-            switch viewModel.comments {
-            case .loading:
-                ProgressView()
-                    .onAppear {
-                        viewModel.fetchComments()
+        NavigationView {
+            Group {
+                switch viewModel.comments {
+                case .loading:
+                    ProgressView()
+                        .onAppear {
+                            viewModel.fetchComments()
+                        }
+                case let .error(error):
+                    EmptyListView(
+                        title: "Cannot Load Comments",
+                        message: error.localizedDescription,
+                        retryAction: {
+                            viewModel.fetchComments()
+                        }
+                    )
+                case .empty:
+                    EmptyListView(
+                        title: "No Comments",
+                        message: "Be the first to leave a comment."
+                    )
+                case let .loaded(comments):
+                    List(comments) { comment in
+                        CommentRow(viewModel: viewModel.makeCommentRowViewModel(for: comment))
                     }
-            case let .error(error):
-                EmptyListView(
-                    title: "Cannot Load Comments",
-                    message: error.localizedDescription,
-                    retryAction: {
-                        viewModel.fetchComments()
-                    }
-                )
-            case .empty:
-                EmptyListView(
-                    title: "No Comments",
-                    message: "Be the first to leave a comment."
-                )
-            case let .loaded(comments):
-                List(comments) { comment in
-                    CommentRow(viewModel: viewModel.makeCommentRowViewModel(for: comment))
+                    .animation(.default, value: comments)
                 }
-                .animation(.default, value: comments)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    NewCommentForm(viewModel: viewModel.makeNewCommentViewModel())
+                }
             }
         }
         .navigationTitle("Comments")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItemGroup(placement: .bottomBar) {
-                NewCommentForm(viewModel: viewModel.makeNewCommentViewModel())
-            }
-        }
     }
 }
 
@@ -59,7 +61,6 @@ private extension CommentsList {
         var body: some View {
             Group {
                 TextField("Comment", text: $viewModel.content)
-                Spacer()
                 Button(action: viewModel.submit) {
                     if viewModel.isWorking {
                         ProgressView()
