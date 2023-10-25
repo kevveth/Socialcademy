@@ -7,58 +7,59 @@
 
 import SwiftUI
 
+// MARK: - CommentsList
+
 struct CommentsList: View {
     @StateObject var viewModel: CommentsViewModel
     
     var body: some View {
-
-        NavigationView{
-            Group {
-                switch viewModel.comments {
-                case .loading:
-                    ProgressView()
-                        .onAppear {
-                            viewModel.fetchComments()
-                        }
-                case let .error(error):
-                    EmptyListView(
-                        title: "Cannot Load Comments",
-                        message: error.localizedDescription,
-                        retryAction: {
-                            viewModel.fetchComments()
-                        }
-                    )
-                case .empty:
-                    EmptyListView(
-                        title: "No Comments",
-                        message: "Be the first to leave a comment."
-                    )
-                case let .loaded(comments):
-                    List(comments) { comment in
-                        CommentRow(viewModel: viewModel.makeCommentRowViewModel(for: comment))
+        Group {
+            switch viewModel.comments {
+            case .loading:
+                ProgressView()
+                    .onAppear {
+                        viewModel.fetchComments()
                     }
-                    .animation(.default, value: comments)
+            case let .error(error):
+                EmptyListView(
+                    title: "Cannot Load Comments",
+                    message: error.localizedDescription,
+                    retryAction: {
+                        viewModel.fetchComments()
+                    }
+                )
+            case .empty:
+                EmptyListView(
+                    title: "No Comments",
+                    message: "Be the first to leave a comment."
+                )
+            case let .loaded(comments):
+                List(comments) { comment in
+                    CommentRow(viewModel: viewModel.makeCommentRowViewModel(for: comment))
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    NewCommentForm(viewModel: viewModel.makeNewCommentViewModel())
-                        .padding(.bottom, 20)
-                }
+                .animation(.default, value: comments)
             }
         }
-            .navigationTitle("Comments")
-            .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Comments")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                NewCommentForm(viewModel: viewModel.makeNewCommentViewModel())
+            }
+        }
     }
 }
+
+// MARK: - NewCommentForm
 
 private extension CommentsList {
     struct NewCommentForm: View {
         @StateObject var viewModel: FormViewModel<Comment>
         
         var body: some View {
-            HStack {
+            Group {
                 TextField("Comment", text: $viewModel.content)
+                Spacer()
                 Button(action: viewModel.submit) {
                     if viewModel.isWorking {
                         ProgressView()
@@ -74,6 +75,8 @@ private extension CommentsList {
         }
     }
 }
+
+// MARK: - Previews
 
 #if DEBUG
 struct CommentsList_Previews: PreviewProvider {
