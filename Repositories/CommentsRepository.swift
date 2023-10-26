@@ -50,7 +50,7 @@ struct CommentsRepository: CommentsRepositoryProtocol {
     let post: Post
     
     private var commentsReference: CollectionReference {
-        let postsReference = Firestore.firestore().collection("posts_v2")
+        let postsReference = Firestore.firestore().collection("posts_v3")
         let document = postsReference.document(post.id.uuidString)
         return document.collection("comments")
     }
@@ -68,6 +68,7 @@ struct CommentsRepository: CommentsRepositoryProtocol {
     
     func delete(_ comment: Comment) async throws {
         precondition(canDelete(comment))
+        
         let document = commentsReference.document(comment.id.uuidString)
         try await document.delete()
     }
