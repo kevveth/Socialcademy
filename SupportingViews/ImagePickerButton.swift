@@ -35,6 +35,12 @@ struct ImagePickerButton<Label : View>: View {
                 })
             }
         }
+        .fullScreenCover(item: $sourceType) { sourceType in
+            ImagePickerView(sourceType: sourceType){
+                imageURL = $0
+            }
+            .ignoresSafeArea()
+        }
     }
 }
 
@@ -73,4 +79,8 @@ extension ImagePickerButton {
             view.dismiss()
         }
     }
+}
+
+extension UIImagePickerController.SourceType: Identifiable {
+    public var id: String { "\(self)" }
 }
