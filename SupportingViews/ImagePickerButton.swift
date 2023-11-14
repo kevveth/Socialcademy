@@ -5,12 +5,21 @@
 //  Created by Kenneth Oliver Rathbun on 11/10/23.
 //
 
-import Foundation
+//
+//  ImagePickerButton.swift
+//  Socialcademy
+//
+//  Created by John Royal on 1/9/22.
+//
+
 import SwiftUI
 
-struct ImagePickerButton<Label : View>: View {
+// MARK: - ImagePickerButton
+
+struct ImagePickerButton<Label: View>: View {
     @Binding var imageURL: URL?
     @ViewBuilder let label: () -> Label
+    
     @State private var showImageSourceDialog = false
     @State private var sourceType: UIImagePickerController.SourceType?
     
@@ -24,11 +33,9 @@ struct ImagePickerButton<Label : View>: View {
             Button("Choose from Library", action: {
                 sourceType = .photoLibrary
             })
-            
             Button("Take Photo", action: {
                 sourceType = .camera
             })
-            
             if imageURL != nil {
                 Button("Remove Photo", role: .destructive, action: {
                     imageURL = nil
@@ -36,7 +43,7 @@ struct ImagePickerButton<Label : View>: View {
             }
         }
         .fullScreenCover(item: $sourceType) { sourceType in
-            ImagePickerView(sourceType: sourceType){
+            ImagePickerView(sourceType: sourceType) {
                 imageURL = $0
             }
             .ignoresSafeArea()
@@ -44,7 +51,13 @@ struct ImagePickerButton<Label : View>: View {
     }
 }
 
-extension ImagePickerButton {
+extension UIImagePickerController.SourceType: Identifiable {
+    public var id: String { "\(self)" }
+}
+
+// MARK: - ImagePickerView
+
+private extension ImagePickerButton {
     struct ImagePickerView: UIViewControllerRepresentable {
         let sourceType: UIImagePickerController.SourceType
         let onSelect: (URL) -> Void
@@ -65,7 +78,11 @@ extension ImagePickerButton {
         
         func updateUIViewController(_ imagePicker: UIImagePickerController, context: Context) {}
     }
-    
+}
+
+// MARK: - ImagePickerCoordinator
+
+private extension ImagePickerButton {
     class ImagePickerCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let view: ImagePickerView
         
@@ -73,7 +90,7 @@ extension ImagePickerButton {
             self.view = view
         }
         
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             guard let imageURL = info[.imageURL] as? URL else { return }
             view.onSelect(imageURL)
             view.dismiss()
@@ -81,6 +98,12 @@ extension ImagePickerButton {
     }
 }
 
-extension UIImagePickerController.SourceType: Identifiable {
-    public var id: String { "\(self)" }
+// MARK: - Preview
+
+struct ImagePickerButton_Previews: PreviewProvider {
+    static var previews: some View {
+        ImagePickerButton(imageURL: .constant(nil)) {
+            Label("Choose Image", systemImage: "photo.fill")
+        }
+    }
 }

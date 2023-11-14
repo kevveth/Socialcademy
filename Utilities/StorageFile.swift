@@ -21,7 +21,7 @@ struct StorageFile {
     }
     
     func delete() async throws {
-        
+        try await storageReference.delete()
     }
 }
 
