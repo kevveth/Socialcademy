@@ -20,10 +20,14 @@ struct NewPostForm: View {
                 Section {
                     TextField("Title", text: $viewModel.title)
                 }
+                
+                ImageSection(imageURL: $viewModel.imageURL)
+                
                 Section("Content") {
                     TextEditor(text: $viewModel.content)
                         .multilineTextAlignment(.leading)
                 }
+                
                 Button(action: viewModel.submit) {
                     if viewModel.isWorking {
                         ProgressView()
@@ -45,6 +49,26 @@ struct NewPostForm: View {
         .onChange(of: viewModel.isWorking) { isWorking in
             guard !isWorking, viewModel.error == nil else { return }
             dismiss()
+        }
+    }
+}
+
+extension NewPostForm {
+    struct ImageSection: View {
+        @Binding var imageURL: URL?
+        
+        var body: some View {
+            Section("Image") {
+                AsyncImage(url: imageURL) { image in
+                    image
+                        .image?.resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                ImagePickerButton(imageURL: $imageURL) {
+                    Label("Choose Image", systemImage: "photo.fill")
+                }
+            }
         }
     }
 }
