@@ -27,7 +27,7 @@ struct NewPostForm: View {
                     TextEditor(text: $viewModel.content)
                         .multilineTextAlignment(.leading)
                 }
-                
+            
                 Button(action: viewModel.submit) {
                     if viewModel.isWorking {
                         ProgressView()
