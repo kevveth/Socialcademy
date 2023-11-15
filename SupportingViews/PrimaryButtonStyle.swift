@@ -1,5 +1,5 @@
 //
-//  PrimaryButtonFile.swift
+//  PrimaryButtonStyle.swift
 //  Socialcademy
 //
 //  Created by Kenneth Oliver Rathbun on 10/10/23.
