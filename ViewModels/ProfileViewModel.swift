@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ProfileViewModel: ObservableObject, ErrorHandler {
+class ProfileViewModel: ObservableObject, StateManager {
     @Published var name: String
     @Published var imageURL: URL? {
         didSet {
@@ -25,12 +25,12 @@ class ProfileViewModel: ObservableObject, ErrorHandler {
     }
     
     func signOut() {
-        withErrorHandlingTask(perform: authService.signOut)
+        withStateManagingTask(perform: authService.signOut)
     }
     
     private func imageURLDidChange(from oldValue: URL?) {
         guard imageURL != oldValue else { return }
-        withErrorHandlingTask { [self] in
+        withStateManagingTask { [self] in
             try await authService.updateProfileImage(to: imageURL)
         }
     }
