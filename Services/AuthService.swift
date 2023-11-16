@@ -5,7 +5,6 @@
 //  Created by Kenneth Oliver Rathbun on 10/10/23.
 //
 
-import Foundation
 import FirebaseAuth
 
 @MainActor
@@ -17,7 +16,7 @@ class AuthService: ObservableObject {
     
     init() {
         listener = auth.addStateDidChangeListener { [weak self] _, user in
-            self?.user = user.map(User.init(from:))
+            self?.user = user.map { User(from: $0) }
         }
     }
     
@@ -39,7 +38,6 @@ class AuthService: ObservableObject {
         guard let user = auth.currentUser else {
             preconditionFailure("Cannot update profile for nil user")
         }
-        
         guard let imageFileURL = imageFileURL else {
             try await user.updateProfile(\.photoURL, to: nil)
             if let photoURL = user.photoURL {
@@ -47,7 +45,6 @@ class AuthService: ObservableObject {
             }
             return
         }
-        
         async let newPhotoURL = StorageFile
             .with(namespace: "users", identifier: user.uid)
             .putFile(from: imageFileURL)
@@ -56,18 +53,18 @@ class AuthService: ObservableObject {
     }
 }
 
-private extension FirebaseAuth.User {
-    func updateProfile<T>(_ keyPath: WritableKeyPath<UserProfileChangeRequest, T>, to newValue: T) async throws {
-        var profileChangeRequest = createProfileChangeRequest()
-        profileChangeRequest[keyPath: keyPath] = newValue
-        try await profileChangeRequest.commitChanges()
-    }
-}
-
 private extension User {
     init(from firebaseUser: FirebaseAuth.User) {
         self.id = firebaseUser.uid
         self.name = firebaseUser.displayName ?? ""
         self.imageURL = firebaseUser.photoURL
+    }
+}
+
+private extension FirebaseAuth.User {
+    func updateProfile<T>(_ keyPath: WritableKeyPath<UserProfileChangeRequest, T>, to newValue: T) async throws {
+        var profileChangeRequest = createProfileChangeRequest()
+        profileChangeRequest[keyPath: keyPath] = newValue
+        try await profileChangeRequest.commitChanges()
     }
 }

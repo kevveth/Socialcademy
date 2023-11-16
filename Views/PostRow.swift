@@ -89,9 +89,12 @@ private extension PostRow {
             NavigationLink {
                 PostsList(viewModel: factory.makePostsViewModel(filter: .author(author)))
             } label: {
-                Text(author.name)
-                    .font(.subheadline)
+                HStack {
+                    ProfileImage(url: author.imageURL)
+                    Text(author.name)
+                        .font(.subheadline)
                     .fontWeight(.medium)
+                }
             }
         }
     }

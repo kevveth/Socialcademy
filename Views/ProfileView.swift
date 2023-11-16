@@ -12,13 +12,10 @@ struct ProfileView: View {
     @StateObject var viewModel: ProfileViewModel
     
     var body: some View {
-//        Button("Sign Out") {
-//            try! Auth.auth().signOut()
-//        }
         NavigationView {
             VStack {
                 Spacer()
-                AsyncImage(url: viewModel.imageURL)
+                ProfileImage(url: viewModel.imageURL)
                     .frame(width: 200, height: 200)
                 Spacer()
                 Text(viewModel.name)

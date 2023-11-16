@@ -7,6 +7,9 @@
 
 import Foundation
 
+import Foundation
+
+@MainActor
 class ProfileViewModel: ObservableObject, StateManager {
     @Published var name: String
     @Published var imageURL: URL? {
@@ -15,6 +18,7 @@ class ProfileViewModel: ObservableObject, StateManager {
         }
     }
     @Published var error: Error?
+    @Published var isWorking = false
     
     private let authService: AuthService
     
