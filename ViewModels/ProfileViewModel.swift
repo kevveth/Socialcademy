@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 @MainActor
 class ProfileViewModel: ObservableObject, StateManager {
     @Published var name: String
